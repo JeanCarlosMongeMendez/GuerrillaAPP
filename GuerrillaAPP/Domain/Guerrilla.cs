@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,5 +16,7 @@ namespace GuerrillaAPP.Domain
         public int idGuerrilla { get; set; }
         public String nombreGuerrilla { get; set; }
         public String correoGuerrilla { get; set; }
+        public ArrayList unidadesDeBatalla { get; set; }
+        public ArrayList listaRecursos { get; set; }
     }
 }
