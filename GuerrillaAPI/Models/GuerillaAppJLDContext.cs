@@ -18,7 +18,7 @@ namespace GuerrillaAPI.Models
         public virtual DbSet<Guerrilla> Guerrilla { get; set; }
         public virtual DbSet<Recurso> Recurso { get; set; }
         public virtual DbSet<RecursoDeGuerrilla> RecursoDeGuerrilla { get; set; }
-        public virtual DbSet<UnidadesDeBatalla> UnidadesDeBatalla { get; set; }
+        public virtual DbSet<UnidadDeBatalla> UnidadesDeBatalla { get; set; }
         public virtual DbSet<UnidadesDeGuerrilla> UnidadesDeGuerrilla { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -70,7 +70,7 @@ namespace GuerrillaAPI.Models
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<UnidadesDeBatalla>(entity =>
+            modelBuilder.Entity<UnidadDeBatalla>(entity =>
             {
                 entity.HasKey(e => e.IdUnidad);
 

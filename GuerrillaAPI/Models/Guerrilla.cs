@@ -13,7 +13,7 @@ namespace GuerrillaAPI.Models
         public int rank { get; set; }
         //public int timestamp { get; set; }
         public List<Recurso> resourses { get; set; }
-        public List<UnidadesDeBatalla> buildings { get; set; }
-        public List<UnidadesDeBatalla> army { get; set; }
+        public List<UnidadDeBatalla> buildings { get; set; }
+        public List<UnidadDeBatalla> army { get; set; }
     }
 }

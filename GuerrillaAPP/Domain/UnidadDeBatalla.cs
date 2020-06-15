@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace GuerrillaAPP.Domain
 {
-    public class UnidadesDeBatalla
+    public class UnidadDeBatalla
     {
-        public UnidadesDeBatalla(int idUnidad,int cantidadUnidad,String nombreUnidad,float pillaje,float ataque,
+        public UnidadDeBatalla(int idUnidad,int cantidadUnidad,String nombreUnidad,float pillaje,float ataque,
             float defensa,float costoDinero,float costoPetroleo,float costoUnidades)
         {
             this.idUnidad = idUnidad;

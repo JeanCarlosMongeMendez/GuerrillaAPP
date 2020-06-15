@@ -12,6 +12,8 @@ namespace GuerrillaAPP.Domain
             this.idGuerrilla = idGuerrilla;
             this.nombreGuerrilla = nombreGuerrilla;
             this.correoGuerrilla = correoGuerrilla;
+            listaRecursos = new ArrayList();
+            unidadesDeBatalla = new ArrayList();
         }
         public int idGuerrilla { get; set; }
         public String nombreGuerrilla { get; set; }
