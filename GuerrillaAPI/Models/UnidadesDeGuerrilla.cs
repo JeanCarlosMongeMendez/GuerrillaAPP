@@ -7,8 +7,5 @@ namespace GuerrillaAPI.Models
     {
         public int IdGuerrilla { get; set; }
         public int? IdUnidad { get; set; }
-
-        public virtual Guerrilla IdGuerrillaNavigation { get; set; }
-        public virtual UnidadesDeBatalla IdUnidadNavigation { get; set; }
     }
 }

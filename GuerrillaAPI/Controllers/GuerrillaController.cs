@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using GuerrillaAPI.Models;
 using Microsoft.Data.SqlClient;
+using Newtonsoft.Json;
 
 namespace GuerrillaAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     //[AllowAnonymous]
     [ApiController]
     public class GuerrillaController : ControllerBase
@@ -20,41 +21,35 @@ namespace GuerrillaAPI.Controllers
             _context = context;
         }
 
-        [Route("[action]")]
         //[EnableCors("GetAllPolicy")]
         [HttpGet]
-        public IActionResult GetAllGuerrillas()
+        public string GetAllGuerrillas()
         {
             try
             {
                 //var students = _context.Student.FromSqlRaw($"SelectStudent").AsEnumerable();
                 var guerrillas = _context.Guerrilla.ToList();
-                return Ok(guerrillas);
+                return JsonConvert.SerializeObject(guerrillas);
             }
             catch
             {
-                return Problem();
+                throw;
             }
         }
 
-        [Route("[action]/{id}")]
-        [HttpGet("{id}")]
-        public IActionResult GetGuerrilla(int id)
+        [HttpGet("{name}")]
+        public string GetGuerrilla(string name)
         {
             try
             {
-                SqlParameter studentId = new SqlParameter("@StudentId", id);
+                SqlParameter studentId = new SqlParameter("@name", name);
                 //var student = _context.Student.FromSqlRaw($"SelectStudentById @StudentId", studentId).AsEnumerable().Single();
-                var guerrilla = _context.Guerrilla.Where(g => g.IdGuerrilla == id).Single();
-                if (guerrilla == null)
-                {
-                    return NotFound();
-                }
-                return Ok(guerrilla);
+                var guerrilla = _context.Guerrilla.Where(g => g.guerrillaName.Equals(name)).Single();
+                return JsonConvert.SerializeObject(guerrilla);
             }
             catch
             {
-                return Problem();
+                throw;
             }
         }
 
@@ -78,55 +73,25 @@ namespace GuerrillaAPI.Controllers
 
         //[EnableCors("GetAllPolicy")]
 
-        [Route("[action]")]
-        [HttpPost]
-        public IActionResult CreateGuerrilla(Guerrilla guerrilla)
+        [HttpPost("{name}")]
+        public string CreateGuerrilla(Guerrilla guerrilla, string name)
         {
             try
             {
-                int result = 0;
-                SqlParameter nombre = new SqlParameter("@nombre", guerrilla.Nombre);
-                SqlParameter correo = new SqlParameter("@correo", guerrilla.Correo);
-                SqlParameter tipo = new SqlParameter("@tipo_guerrilla", guerrilla.TipoGuerrilla);
+                SqlParameter nombre = new SqlParameter("@nombre", guerrilla.guerrillaName);
+                SqlParameter correo = new SqlParameter("@correo", guerrilla.email);
+                SqlParameter tipo = new SqlParameter("@tipo_guerrilla", guerrilla.faction);
                 //result = _context.Database.ExecuteSqlRaw($"InsertUpdateStudent @StudentId, @Name, @Age, @NationalityId, @MajorId, @Action",
                 //    studentId, name, age, nationality, major, action);
-                 _context.Guerrilla.Add(guerrilla);
+                _context.Guerrilla.Add(guerrilla);
                 _context.SaveChanges();
-                return Ok(result);
+                var guerrillaAdded = _context.Guerrilla.Where(g => g.guerrillaName.Equals(guerrilla.guerrillaName)).Single();
+                return JsonConvert.SerializeObject(guerrillaAdded);
             }
             catch
             {
                 throw;
-                //return Problem();
             }
         }
-
-        ////[EnableCors("GetAllPolicy")]
-        //[Route("[action]")]
-        //[HttpPut]
-        //public IActionResult UpdateGuerrilla(Guerrilla guerrilla)
-        //{
-        //    try
-        //    {
-        //        int result = 0;
-        //        SqlParameter studentId = new SqlParameter("@StudentId", student.StudentId);
-        //        SqlParameter name = new SqlParameter("@Name", student.Name);
-        //        SqlParameter age = new SqlParameter("@Age", student.Age);
-        //        //SqlParameter interests = new SqlParameter("@Interests", student.Interests);
-        //        //SqlParameter entryDate = new SqlParameter("@EntryDate", student.EntryDate);
-        //        SqlParameter nationality = new SqlParameter("@NationalityId", student.NationalityId);
-        //        SqlParameter major = new SqlParameter("@MajorId", student.MajorId);
-        //        //SqlParameter seniority = new SqlParameter("@SeniorityId", student.Seniority.Id);
-        //        SqlParameter action = new SqlParameter("@Action", "Update");
-        //        result = _context.Database.ExecuteSqlRaw($"InsertUpdateStudent @StudentId, @Name, @Age, @NationalityId, @MajorId, @Action",
-        //            studentId, name, age, nationality, major, action);
-        //        return Ok(result);
-        //    }
-        //    catch
-        //    {
-        //        throw;
-        //        //return Problem();
-        //    }
-        //}
     }
 }

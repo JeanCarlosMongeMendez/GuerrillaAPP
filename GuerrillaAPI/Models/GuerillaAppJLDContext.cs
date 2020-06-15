@@ -35,17 +35,19 @@ namespace GuerrillaAPI.Models
 
                 entity.Property(e => e.IdGuerrilla).HasColumnName("id_guerrilla");
 
-                entity.Property(e => e.Correo)
+                entity.Property(e => e.rank).HasColumnName("ranking");
+
+                entity.Property(e => e.email)
                     .HasColumnName("correo")
                     .HasMaxLength(150)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Nombre)
+                entity.Property(e => e.guerrillaName)
                     .HasColumnName("nombre")
                     .HasMaxLength(150)
                     .IsUnicode(false);
 
-                entity.Property(e => e.TipoGuerrilla)
+                entity.Property(e => e.faction)
                     .HasColumnName("tipo_guerrilla")
                     .HasMaxLength(150)
                     .IsUnicode(false);
@@ -66,31 +68,6 @@ namespace GuerrillaAPI.Models
                     .HasColumnName("nombre")
                     .HasMaxLength(150)
                     .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<RecursoDeGuerrilla>(entity =>
-            {
-                entity.HasKey(e => e.IdGuerrilla);
-
-                entity.ToTable("recurso_de_guerrilla");
-
-                entity.Property(e => e.IdGuerrilla)
-                    .HasColumnName("id_guerrilla")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.IdRecurso).HasColumnName("id_recurso");
-
-                entity.HasOne(d => d.IdGuerrillaNavigation)
-                    .WithOne(p => p.RecursoDeGuerrilla)
-                    .HasForeignKey<RecursoDeGuerrilla>(d => d.IdGuerrilla)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("id_guerrilla");
-
-                entity.HasOne(d => d.IdGuerrilla1)
-                    .WithOne(p => p.RecursoDeGuerrilla)
-                    .HasForeignKey<RecursoDeGuerrilla>(d => d.IdGuerrilla)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("id_recurso");
             });
 
             modelBuilder.Entity<UnidadesDeBatalla>(entity =>
@@ -135,26 +112,12 @@ namespace GuerrillaAPI.Models
 
             modelBuilder.Entity<UnidadesDeGuerrilla>(entity =>
             {
-                entity.HasKey(e => e.IdGuerrilla);
+                entity.HasNoKey();
+            });
 
-                entity.ToTable("unidades_de_guerrilla");
-
-                entity.Property(e => e.IdGuerrilla)
-                    .HasColumnName("id_guerrilla")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.IdUnidad).HasColumnName("id_unidad");
-
-                entity.HasOne(d => d.IdGuerrillaNavigation)
-                    .WithOne(p => p.UnidadesDeGuerrilla)
-                    .HasForeignKey<UnidadesDeGuerrilla>(d => d.IdGuerrilla)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("guerrillaunidad");
-
-                entity.HasOne(d => d.IdUnidadNavigation)
-                    .WithMany(p => p.UnidadesDeGuerrilla)
-                    .HasForeignKey(d => d.IdUnidad)
-                    .HasConstraintName("unidadguerrilla");
+            modelBuilder.Entity<RecursoDeGuerrilla>(entity =>
+            {
+                entity.HasNoKey();
             });
 
             OnModelCreatingPartial(modelBuilder);
