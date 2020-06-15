@@ -24,7 +24,7 @@ namespace GuerrillaAPP.Controllers
     public List<UnidadDeBatalla> unidadesDeDefensa { get; set; }
 
      [HttpPost("{guerrillaName}")]
-     public void ataque(String guerrillaName,String guerrillaSrc)
+     public string ataque(String guerrillaName,String guerrillaSrc)
         {
             Guerrilla guerrillaAtacada = _context.Guerrilla.Where(g => g.guerrillaName.Equals(guerrillaName)).Single();
             Guerrilla guerrillaAtacante = _context.Guerrilla.Where(g => g.guerrillaName.Equals(guerrillaSrc)).Single();
@@ -49,7 +49,11 @@ namespace GuerrillaAPP.Controllers
                 }
                 contadorUnidadDefensa += 1;
             }
-            
+            guerrillaAtacada.army = unidadesDeDefensa;
+            guerrillaAtacada.army = unidadesDeBatalla;
+            return JsonConvert.SerializeObject(guerrillaAtacada)+ ", results:"+JsonConvert.SerializeObject(guerrillaAtacante) ;
+
+
         }
     private float calcularOS() {
             float total = 0;
