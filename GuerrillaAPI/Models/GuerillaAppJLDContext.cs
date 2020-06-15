@@ -72,40 +72,40 @@ namespace GuerrillaAPI.Models
 
             modelBuilder.Entity<UnidadDeBatalla>(entity =>
             {
-                entity.HasKey(e => e.IdUnidad);
+                entity.HasKey(e => e.idUnidad);
 
                 entity.ToTable("unidades_de_batalla");
 
-                entity.Property(e => e.IdUnidad)
+                entity.Property(e => e.idUnidad)
                     .HasColumnName("id_unidad")
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.Ataque)
+                entity.Property(e => e.ataque)
                     .HasColumnName("ataque")
                     .HasColumnType("decimal(18, 0)");
 
-                entity.Property(e => e.CostoDinero)
+                entity.Property(e => e.costoDinero)
                     .HasColumnName("costo_dinero")
                     .HasColumnType("decimal(18, 0)");
 
-                entity.Property(e => e.CostoPetroleo)
+                entity.Property(e => e.costoPetroleo)
                     .HasColumnName("costo_petroleo")
                     .HasColumnType("decimal(18, 0)");
 
-                entity.Property(e => e.CostoUnidades)
+                entity.Property(e => e.costoUnidades)
                     .HasColumnName("costo_unidades")
                     .HasColumnType("decimal(18, 0)");
 
-                entity.Property(e => e.Defensa)
+                entity.Property(e => e.defensa)
                     .HasColumnName("defensa")
                     .HasColumnType("decimal(18, 0)");
 
-                entity.Property(e => e.NombreUnidad)
+                entity.Property(e => e.nombreUnidad)
                     .HasColumnName("nombre_unidad")
                     .HasMaxLength(150)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Pillaje)
+                entity.Property(e => e.pillaje)
                     .HasColumnName("pillaje")
                     .HasColumnType("decimal(18, 0)");
             });
