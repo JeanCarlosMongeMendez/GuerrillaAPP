@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using GuerrillaAPI.Models;
+using GuerrillaAPI.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace GuerrillaAPI
@@ -29,7 +29,7 @@ namespace GuerrillaAPI
         {
             services.AddControllers();
             services.AddMvc();
-            services.AddDbContext<GuerillaAppJLDContext>(options => options.UseSqlServer(Configuration.GetConnectionString("GuerrillaDB")));
+            services.AddDbContext<GuerrillaAPPContext>(options => options.UseSqlServer(Configuration.GetConnectionString("GuerrillaDB")));
             //services.AddCors(options =>
             //{
             //    options.AddPolicy("GetAllPolicy", builder =>

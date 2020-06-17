@@ -2,34 +2,60 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GuerrillaAPI.Model;
+using GuerrillaAPI.Model.DTO;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using GuerrillaAPI.Models;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 
 namespace GuerrillaAPI.Controllers
 {
     [Route("[controller]")]
-    //[AllowAnonymous]
     [ApiController]
-    public class GuerrillaController : ControllerBase
+    public class guerrillaController : ControllerBase
     {
-        private readonly GuerillaAppJLDContext _context;
 
-        public GuerrillaController(GuerillaAppJLDContext context)
+        #region global variables
+        private readonly GuerrillaAPPContext _context;
+        private readonly string _oil = "oil";
+        private readonly string _money = "money";
+        private readonly string _people = "people";
+        private readonly string _bunker = "bunker";
+        private readonly string _assault = "assault";
+        private readonly string _engineer = "engineer";
+        private readonly string _tank = "tank";
+        #endregion
+
+        public guerrillaController(GuerrillaAPPContext context)
         {
             _context = context;
         }
 
         //[EnableCors("GetAllPolicy")]
         [HttpGet]
-        public string GetAllGuerrillas()
+        public string GetAllGuerrillas(string faction = null, string email = null, string name = null)
         {
             try
             {
-                //var students = _context.Student.FromSqlRaw($"SelectStudent").AsEnumerable();
-                var guerrillas = _context.Guerrilla.ToList();
-                return JsonConvert.SerializeObject(guerrillas);
+                List<Guerrilla> guerrillas = new List<Guerrilla>();
+
+                if (String.IsNullOrEmpty(faction) && String.IsNullOrEmpty(email) && String.IsNullOrEmpty(name))
+                    guerrillas = _context.Guerrilla.ToList();
+                if (String.IsNullOrEmpty(faction) && String.IsNullOrEmpty(email) && !String.IsNullOrEmpty(name))
+                    guerrillas = _context.Guerrilla.Where(g => g.Name.Equals(name)).ToList();
+                if (String.IsNullOrEmpty(faction) && !String.IsNullOrEmpty(email) && String.IsNullOrEmpty(name))
+                    guerrillas = _context.Guerrilla.Where(g => g.Email.Equals(email)).ToList();
+                if (!String.IsNullOrEmpty(faction) && String.IsNullOrEmpty(email) && String.IsNullOrEmpty(name))
+                    guerrillas = _context.Guerrilla.Where(g => g.Faction.Equals(faction)).ToList();
+
+                List<guerrillas> guerrillasDTO = new List<guerrillas>();
+                
+                foreach(Guerrilla guerrilla in guerrillas)
+                {
+                    guerrillasDTO.Add(new guerrillas { guerrillaName = guerrilla.Name, faction = guerrilla.Faction, rank = guerrilla.Rank });
+                }
+                return JsonConvert.SerializeObject(guerrillasDTO);
             }
             catch
             {
@@ -42,10 +68,7 @@ namespace GuerrillaAPI.Controllers
         {
             try
             {
-                SqlParameter studentId = new SqlParameter("@name", name);
-                //var student = _context.Student.FromSqlRaw($"SelectStudentById @StudentId", studentId).AsEnumerable().Single();
-                var guerrilla = _context.Guerrilla.Where(g => g.guerrillaName.Equals(name)).Single();
-                return JsonConvert.SerializeObject(guerrilla);
+                return GetGuerrillaDTO(name);
             }
             catch
             {
@@ -53,45 +76,91 @@ namespace GuerrillaAPI.Controllers
             }
         }
 
-        ////[EnableCors("GetAllPolicy")]
-        //[Route("[action]/{id}")]
-        //[HttpDelete("{id}")]
-        //public IActionResult DeleteStudentSP(int id)
-        //{
-        //    try
-        //    {
-        //        int result = 0;
-        //        SqlParameter studentId = new SqlParameter("@StudentId", id);
-        //        result = _context.Database.ExecuteSqlRaw($"DeleteStudent @StudentId", studentId);
-        //        return Ok(result);
-        //    }
-        //    catch
-        //    {
-        //        return Problem();
-        //    }
-        //}
-
-        //[EnableCors("GetAllPolicy")]
-
         [HttpPost("{name}")]
-        public string CreateGuerrilla(Guerrilla guerrilla, string name)
+        public string CreateGuerrilla(guerrilla guerrillaDTO, string name)
         {
             try
             {
-                SqlParameter nombre = new SqlParameter("@nombre", guerrilla.guerrillaName);
-                SqlParameter correo = new SqlParameter("@correo", guerrilla.email);
-                SqlParameter tipo = new SqlParameter("@tipo_guerrilla", guerrilla.faction);
-                //result = _context.Database.ExecuteSqlRaw($"InsertUpdateStudent @StudentId, @Name, @Age, @NationalityId, @MajorId, @Action",
-                //    studentId, name, age, nationality, major, action);
+                Guerrilla guerrilla = new Guerrilla();
+                guerrilla.Name = guerrillaDTO.guerrillaName;
+                guerrilla.Email = guerrillaDTO.email;
+                guerrilla.Faction = guerrillaDTO.faction;
+                guerrilla.Rank = 0;
+                guerrilla.Timestamp = 0;
                 _context.Guerrilla.Add(guerrilla);
+                GuerrillaResources oil = new GuerrillaResources { Guerrilla = guerrilla.Name, Quantity = 0, Resource = _oil };
+                GuerrillaResources money = new GuerrillaResources { Guerrilla = guerrilla.Name, Quantity = 0, Resource = _money };
+                GuerrillaResources people = new GuerrillaResources { Guerrilla = guerrilla.Name, Quantity = 0, Resource = _people };
+                _context.GuerrillaResources.Add(oil);
+                _context.GuerrillaResources.Add(money);
+                _context.GuerrillaResources.Add(people);
+
+                GuerrillaUnits bunker = new GuerrillaUnits { Guerrilla = guerrilla.Name, Quantity = 0, Unit = _bunker };
+                GuerrillaUnits assault = new GuerrillaUnits { Guerrilla = guerrilla.Name, Quantity = 0, Unit = _assault };
+                GuerrillaUnits engineer = new GuerrillaUnits { Guerrilla = guerrilla.Name, Quantity = 0, Unit = _engineer };
+                GuerrillaUnits tank = new GuerrillaUnits { Guerrilla = guerrilla.Name, Quantity = 0, Unit = _tank };
+                _context.GuerrillaUnits.Add(bunker);
+                _context.GuerrillaUnits.Add(assault);
+                _context.GuerrillaUnits.Add(engineer);
+                _context.GuerrillaUnits.Add(tank);
                 _context.SaveChanges();
-                var guerrillaAdded = _context.Guerrilla.Where(g => g.guerrillaName.Equals(guerrilla.guerrillaName)).Single();
-                return JsonConvert.SerializeObject(guerrillaAdded);
+
+                return GetGuerrillaDTO(guerrilla.Name);
             }
             catch
             {
                 throw;
             }
+        }
+
+        private string GetGuerrillaDTO(string name)
+        {
+            //load guerrilla
+            var guerrilla = (from guerrillaDB in _context.Guerrilla where guerrillaDB.Name.Equals(name) 
+                             select new guerrilla()
+                               {
+                                   guerrillaName = guerrillaDB.Name,
+                                   name = guerrillaDB.Name,
+                                   email = guerrillaDB.Email,
+                                   faction = guerrillaDB.Faction,
+                                   rank = guerrillaDB.Rank,
+                                   timestamp = guerrillaDB.Timestamp
+                               }).Single();
+
+            //load resources
+            resources resources = new resources();
+            List<GuerrillaResources> resourcesDB = _context.GuerrillaResources.Where(r => r.Guerrilla.Equals(name)).ToList();
+            foreach(GuerrillaResources guerrillaResources in resourcesDB)
+            {
+                if (guerrillaResources.Resource.Equals(_oil))
+                    resources.oil = guerrillaResources.Quantity;
+                if (guerrillaResources.Resource.Equals(_money))
+                    resources.money = guerrillaResources.Quantity;
+                if (guerrillaResources.Resource.Equals(_people))
+                    resources.people = guerrillaResources.Quantity;
+            }
+            guerrilla.resources = resources;
+
+            //load units
+            buildings buildings = new buildings();
+            army army = new army();
+            List<GuerrillaUnits> unitsDB = _context.GuerrillaUnits.Where(u => u.Guerrilla.Equals(name)).ToList();
+            foreach (GuerrillaUnits guerrillaUnits in unitsDB)
+            {
+                if (guerrillaUnits.Unit.Equals(_bunker))
+                    buildings.bunker = guerrillaUnits.Quantity;
+                if (guerrillaUnits.Unit.Equals(_assault))
+                    army.assault = guerrillaUnits.Quantity;
+                if (guerrillaUnits.Unit.Equals(_engineer))
+                    army.engineer = guerrillaUnits.Quantity;
+                if (guerrillaUnits.Unit.Equals(_tank))
+                    army.tank = guerrillaUnits.Quantity;
+            }
+            guerrilla.resources = resources;
+            guerrilla.buildings = buildings;
+            guerrilla.army = army;
+
+            return JsonConvert.SerializeObject(guerrilla);
         }
     }
 }
