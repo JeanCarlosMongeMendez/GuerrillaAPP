@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Guerrilla App</title>
+<link rel="stylesheet" type="text/css" href="static/css/Login.css" th:href="@{css/Login.css}">
+
+<meta charset="UTF-8">
+</head>
+<body>
+	<div class="respmenu">
+  <input type="checkbox">
+  <i class="fas fa-bars"></i>
+  <i class="fas fa-times"></i>
+  <nav>
+    <ul>
+      <li><a href="#">My Profile</a></li>
+      <li><a href="#">Ranking</a></li>
+      <li><a href="#">Settings</a></li>
+      <li><a href="#">LogOut</a></li>
+    </ul>
+  </nav>
+</div>
+	
+
+	<br>
+	<br>
+	<br>
+
+	<section id="Vision">
+		<div class="Contenedor"></div>
+		<div class="Formulario">
+			<form action="#" method="POST" th:action="@{/login}" id="emailForm"
+				class="container">
+				<label for="CorreoElectronico"><b>Correo electrónico:
+				</b></label> <input type="text" name="CorreoElectronico" 	  id="CorreoElectronico"
+					placeholder="Ingrese su correo electrónico" required> <br>
+				<br> <input type="submit" name="Sign" id="BotonSign"
+					value="Sign">
+                    <input type="submit" name="Login" id="BotonLogin"
+					value="Login">
+			</form>
+		</div>
+	</section>
+</body>
+</html>
