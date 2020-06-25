@@ -49,6 +49,8 @@ namespace GuerrillaAPI.Model
                 entity.Property(e => e.Rank).HasColumnName("rank");
 
                 entity.Property(e => e.Timestamp).HasColumnName("timestamp");
+
+                entity.Property(e => e.Available).HasColumnName("available");
             });
 
             modelBuilder.Entity<GuerrillaResources>(entity =>

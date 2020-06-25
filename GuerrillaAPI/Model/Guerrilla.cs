@@ -10,5 +10,6 @@ namespace GuerrillaAPI.Model
         public string Faction { get; set; }
         public int Timestamp { get; set; }
         public int Rank { get; set; }
+        public bool Available { get; set; }
     }
 }

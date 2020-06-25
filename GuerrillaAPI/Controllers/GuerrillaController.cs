@@ -51,7 +51,7 @@ namespace GuerrillaAPI.Controllers
 
                 List<guerrillas> guerrillasDTO = new List<guerrillas>();
 
-                foreach (Guerrilla guerrilla in guerrillas)
+                foreach (Guerrilla guerrilla in guerrillas.Where(g => g.Available))
                 {
                     guerrillasDTO.Add(new guerrillas { guerrillaName = guerrilla.Name, faction = guerrilla.Faction, rank = guerrilla.Rank });
                 }
@@ -87,6 +87,7 @@ namespace GuerrillaAPI.Controllers
                 guerrilla.Faction = guerrillaDTO.faction;
                 guerrilla.Rank = 0;
                 guerrilla.Timestamp = 0;
+                guerrilla.Available = true;
                 _context.Guerrilla.Add(guerrilla);
                 GuerrillaResources oil = new GuerrillaResources { Guerrilla = guerrilla.Name, Quantity = 0, Resource = _oil };
                 GuerrillaResources money = new GuerrillaResources { Guerrilla = guerrilla.Name, Quantity = 0, Resource = _money };
@@ -127,8 +128,8 @@ namespace GuerrillaAPI.Controllers
             #region calculate costs
             int oilCost = units.army.assault * allUnits.Where(u => u.Name.Equals(_assault)).Single().Oil +
                     units.army.engineer * allUnits.Where(u => u.Name.Equals(_engineer)).Single().Oil +
-                    units.army.tank * allUnits.Where(u => u.Name.Equals(_tank)).Single().Oil + 
-                    units.buildings.bunker * allUnits.Where(u=>u.Name.Equals(_bunker)).Single().Oil;
+                    units.army.tank * allUnits.Where(u => u.Name.Equals(_tank)).Single().Oil +
+                    units.buildings.bunker * allUnits.Where(u => u.Name.Equals(_bunker)).Single().Oil;
 
             int moneyCost = units.army.assault * allUnits.Where(u => u.Name.Equals(_assault)).Single().Money +
                 units.army.engineer * allUnits.Where(u => u.Name.Equals(_engineer)).Single().Money +
@@ -144,7 +145,7 @@ namespace GuerrillaAPI.Controllers
             GuerrillaResources guerrillaOil = guerrillaResources.Where(r => r.Resource.Equals(_oil)).Single();
             GuerrillaResources guerrillaMoney = guerrillaResources.Where(r => r.Resource.Equals(_money)).Single();
             GuerrillaResources guerrillaPeople = guerrillaResources.Where(r => r.Resource.Equals(_people)).Single();
-            if ((guerrillaOil.Quantity - oilCost) >= 0 && (guerrillaMoney.Quantity-moneyCost)>=0 && (guerrillaPeople.Quantity - peopleCost)>0)
+            if ((guerrillaOil.Quantity - oilCost) >= 0 && (guerrillaMoney.Quantity - moneyCost) >= 0 && (guerrillaPeople.Quantity - peopleCost) > 0)
             {
                 if (units.army.assault > 0)
                 {
@@ -155,7 +156,7 @@ namespace GuerrillaAPI.Controllers
                     _context.GuerrillaUnits.Update(assaultNewUnits);
                 }
 
-                if(units.army.engineer > 0)
+                if (units.army.engineer > 0)
                 {
                     GuerrillaUnits engineerNewUnits = new GuerrillaUnits();
                     engineerNewUnits.Guerrilla = name;
@@ -163,8 +164,8 @@ namespace GuerrillaAPI.Controllers
                     engineerNewUnits.Quantity = units.army.engineer;
                     _context.GuerrillaUnits.Update(engineerNewUnits);
                 }
-                
-                if(units.army.tank > 0)
+
+                if (units.army.tank > 0)
                 {
                     GuerrillaUnits tankNewUnits = new GuerrillaUnits();
                     tankNewUnits.Guerrilla = name;
@@ -189,6 +190,131 @@ namespace GuerrillaAPI.Controllers
                 _context.SaveChanges();
             }
             return GetGuerrillaDTO(name);
+        }
+
+        [HttpPost("attack/{guerrillaName}")]
+        public string attack(string guerrillaName, string guerrillaSrc)
+        {
+            List<GuerrillaResources> guerrillaSrcResources = _context.GuerrillaResources.Where(g => g.Guerrilla.Equals(guerrillaSrc)).ToList();
+            List<GuerrillaResources> guerrillaTgtResources = _context.GuerrillaResources.Where(g => g.Guerrilla.Equals(guerrillaName)).ToList();
+            List<GuerrillaUnits> guerrillaSrcUnits = _context.GuerrillaUnits.Where(g => g.Guerrilla.Equals(guerrillaSrc)).ToList();
+            List<GuerrillaUnits> guerrillaTgtUnits = _context.GuerrillaUnits.Where(g => g.Guerrilla.Equals(guerrillaName)).ToList();
+            List<Unit> units = _context.Unit.ToList();
+            Team teamSrc = new Team();
+            Team teamTgt = new Team();
+
+            teamSrc.GUERRILLA = guerrillaSrc;
+            teamSrc.LOSSES = new losses();
+            teamSrc.LOOT = new loot();
+            teamTgt.GUERRILLA = guerrillaName;
+            teamTgt.LOSSES = new losses();
+
+            teamSrc.ASSAULT = guerrillaSrcUnits.Where(g => g.Unit.Equals(_assault)).Single().Quantity;
+            teamSrc.ENGINEER = guerrillaSrcUnits.Where(g => g.Unit.Equals(_engineer)).Single().Quantity;
+            teamSrc.TANK = guerrillaSrcUnits.Where(g => g.Unit.Equals(_tank)).Single().Quantity;
+            teamSrc.BUNKER = guerrillaSrcUnits.Where(g => g.Unit.Equals(_bunker)).Single().Quantity;
+
+            teamSrc.OFFENSE = teamSrc.ASSAULT * (units.Where(u => u.Name.Equals(_assault)).Single().Offense)
+                + teamSrc.ENGINEER * (units.Where(u => u.Name.Equals(_engineer)).Single().Offense)
+                + teamSrc.TANK * (units.Where(u => u.Name.Equals(_tank)).Single().Offense);
+
+            teamSrc.DEFENSE = teamSrc.ASSAULT * (units.Where(u => u.Name.Equals(_assault)).Single().Defense)
+                + teamSrc.ENGINEER * (units.Where(u => u.Name.Equals(_engineer)).Single().Defense)
+                + teamSrc.TANK * (units.Where(u => u.Name.Equals(_tank)).Single().Defense);
+
+            teamSrc.LOOT_CAP = teamSrc.ASSAULT * (units.Where(u => u.Name.Equals(_assault)).Single().Loot)
+                + teamSrc.ENGINEER * (units.Where(u => u.Name.Equals(_engineer)).Single().Loot)
+                + teamSrc.TANK * (units.Where(u => u.Name.Equals(_tank)).Single().Loot);
+
+            //===========================================================================
+
+            teamTgt.ASSAULT = guerrillaTgtUnits.Where(g => g.Unit.Equals(_assault)).Single().Quantity;
+            teamTgt.ENGINEER = guerrillaTgtUnits.Where(g => g.Unit.Equals(_engineer)).Single().Quantity;
+            teamTgt.TANK = guerrillaTgtUnits.Where(g => g.Unit.Equals(_tank)).Single().Quantity;
+            teamTgt.BUNKER = guerrillaTgtUnits.Where(g => g.Unit.Equals(_bunker)).Single().Quantity;
+
+            teamTgt.OFFENSE = teamTgt.ASSAULT * (units.Where(u => u.Name.Equals(_assault)).Single().Offense)
+                + teamTgt.ENGINEER * (units.Where(u => u.Name.Equals(_engineer)).Single().Offense)
+                + teamTgt.TANK * (units.Where(u => u.Name.Equals(_tank)).Single().Offense);
+
+            teamTgt.DEFENSE = teamTgt.ASSAULT * (units.Where(u => u.Name.Equals(_assault)).Single().Defense)
+                + teamTgt.ENGINEER * (units.Where(u => u.Name.Equals(_engineer)).Single().Defense)
+                + teamTgt.TANK * (units.Where(u => u.Name.Equals(_tank)).Single().Defense)
+                + teamTgt.BUNKER * (units.Where(u => u.Name.Equals(_bunker)).Single().Defense);
+
+            teamTgt.DI = ((float)teamTgt.DEFENSE / ((float)teamTgt.DEFENSE + (float)teamSrc.OFFENSE)) + (0.1f);
+            teamSrc.AI = ((float)teamSrc.OFFENSE / ((float)teamTgt.DEFENSE + (float)teamSrc.OFFENSE)) + (0.1f);
+
+            //==============================================================================
+            teamSrc.LOSSES.ASSAULT = (int)Math.Floor((teamTgt.ASSAULT * (units.Where(u => u.Name.Equals(_assault)).Single().Assault)
+                + teamTgt.ENGINEER * (units.Where(u => u.Name.Equals(_engineer)).Single().Assault)
+                + teamTgt.TANK * (units.Where(u => u.Name.Equals(_tank)).Single().Assault)
+                + teamTgt.BUNKER * (units.Where(u => u.Name.Equals(_bunker)).Single().Assault)) * teamTgt.DI);
+
+            teamSrc.LOSSES.ENGINEER = (int)Math.Floor((teamTgt.ASSAULT * (units.Where(u => u.Name.Equals(_assault)).Single().Engineer)
+                + teamTgt.ENGINEER * (units.Where(u => u.Name.Equals(_engineer)).Single().Engineer)
+                + teamTgt.TANK * (units.Where(u => u.Name.Equals(_tank)).Single().Engineer)
+                + teamTgt.BUNKER * (units.Where(u => u.Name.Equals(_bunker)).Single().Engineer)) * teamTgt.DI);
+
+            teamSrc.LOSSES.TANK = (int)Math.Floor((teamTgt.ASSAULT * (units.Where(u => u.Name.Equals(_assault)).Single().Tank)
+                + teamTgt.ENGINEER * (units.Where(u => u.Name.Equals(_engineer)).Single().Tank)
+                + teamTgt.TANK * (units.Where(u => u.Name.Equals(_tank)).Single().Tank)
+                + teamTgt.BUNKER * (units.Where(u => u.Name.Equals(_bunker)).Single().Tank)) * teamTgt.DI);
+
+            //====================================================================
+
+            teamTgt.LOSSES.ASSAULT = (int)Math.Floor((teamSrc.ASSAULT * (units.Where(u => u.Name.Equals(_assault)).Single().Assault)
+                + teamSrc.ENGINEER * (units.Where(u => u.Name.Equals(_engineer)).Single().Assault)
+                + teamSrc.TANK * (units.Where(u => u.Name.Equals(_tank)).Single().Assault)
+                + teamSrc.BUNKER * (units.Where(u => u.Name.Equals(_bunker)).Single().Assault)) * teamSrc.AI);
+
+            teamTgt.LOSSES.ENGINEER = (int)Math.Floor((teamSrc.ASSAULT * (units.Where(u => u.Name.Equals(_assault)).Single().Engineer)
+                + teamSrc.ENGINEER * (units.Where(u => u.Name.Equals(_engineer)).Single().Engineer)
+                + teamSrc.TANK * (units.Where(u => u.Name.Equals(_tank)).Single().Engineer)
+                + teamSrc.BUNKER * (units.Where(u => u.Name.Equals(_bunker)).Single().Engineer)) * teamSrc.AI);
+
+            teamTgt.LOSSES.TANK = (int)Math.Floor((teamSrc.ASSAULT * (units.Where(u => u.Name.Equals(_assault)).Single().Tank)
+                + teamSrc.ENGINEER * (units.Where(u => u.Name.Equals(_engineer)).Single().Tank)
+                + teamSrc.TANK * (units.Where(u => u.Name.Equals(_tank)).Single().Tank)
+                + teamSrc.BUNKER * (units.Where(u => u.Name.Equals(_bunker)).Single().Tank)) * teamSrc.AI);
+
+            teamTgt.LOSSES.BUNKER = (int)Math.Floor((teamSrc.ASSAULT * (units.Where(u => u.Name.Equals(_assault)).Single().Bunker)
+                + teamSrc.ENGINEER * (units.Where(u => u.Name.Equals(_engineer)).Single().Bunker)
+                + teamSrc.TANK * (units.Where(u => u.Name.Equals(_tank)).Single().Bunker)
+                + teamSrc.BUNKER * (units.Where(u => u.Name.Equals(_bunker)).Single().Bunker)) * teamSrc.AI);
+
+            var rand = new Random();
+            teamSrc.LOOT.MONEY = (int)Math.Round(rand.Next(101) * teamSrc.LOOT_CAP);
+            teamSrc.LOOT.OIL = (int)Math.Round(teamSrc.LOOT.MONEY * teamSrc.LOOT_CAP);
+
+            guerrillaTgtResources.Where(r => r.Resource.Equals(_oil)).Single().Quantity -= teamSrc.LOOT.OIL;
+            guerrillaTgtResources.Where(r => r.Resource.Equals(_money)).Single().Quantity -= teamSrc.LOOT.MONEY;
+            guerrillaSrcResources.Where(r => r.Resource.Equals(_oil)).Single().Quantity += teamSrc.LOOT.OIL;
+            guerrillaSrcResources.Where(r => r.Resource.Equals(_money)).Single().Quantity += teamSrc.LOOT.MONEY;
+            _context.GuerrillaResources.Update(guerrillaTgtResources.Where(r => r.Resource.Equals(_oil)).Single());
+            _context.GuerrillaResources.Update(guerrillaTgtResources.Where(r => r.Resource.Equals(_money)).Single());
+            _context.GuerrillaResources.Update(guerrillaSrcResources.Where(r => r.Resource.Equals(_oil)).Single());
+            _context.GuerrillaResources.Update(guerrillaSrcResources.Where(r => r.Resource.Equals(_money)).Single());
+
+            guerrillaSrcUnits.Where(u => u.Unit.Equals(_assault)).Single().Quantity -= teamSrc.LOSSES.ASSAULT;
+            guerrillaSrcUnits.Where(u => u.Unit.Equals(_engineer)).Single().Quantity -= teamSrc.LOSSES.ENGINEER;
+            guerrillaSrcUnits.Where(u => u.Unit.Equals(_tank)).Single().Quantity -= teamSrc.LOSSES.TANK;
+            guerrillaTgtUnits.Where(u => u.Unit.Equals(_assault)).Single().Quantity -= teamTgt.LOSSES.ASSAULT;
+            guerrillaTgtUnits.Where(u => u.Unit.Equals(_engineer)).Single().Quantity -= teamTgt.LOSSES.ENGINEER;
+            guerrillaTgtUnits.Where(u => u.Unit.Equals(_tank)).Single().Quantity -= teamTgt.LOSSES.TANK;
+            guerrillaTgtUnits.Where(u => u.Unit.Equals(_bunker)).Single().Quantity -= teamTgt.LOSSES.BUNKER;
+            _context.GuerrillaUnits.Update(guerrillaSrcUnits.Where(u => u.Unit.Equals(_assault)).Single());
+            _context.GuerrillaUnits.Update(guerrillaSrcUnits.Where(u => u.Unit.Equals(_engineer)).Single());
+            _context.GuerrillaUnits.Update(guerrillaSrcUnits.Where(u => u.Unit.Equals(_tank)).Single());
+            _context.GuerrillaUnits.Update(guerrillaTgtUnits.Where(u => u.Unit.Equals(_assault)).Single());
+            _context.GuerrillaUnits.Update(guerrillaTgtUnits.Where(u => u.Unit.Equals(_engineer)).Single());
+            _context.GuerrillaUnits.Update(guerrillaTgtUnits.Where(u => u.Unit.Equals(_tank)).Single());
+            _context.GuerrillaUnits.Update(guerrillaTgtUnits.Where(u => u.Unit.Equals(_bunker)).Single());
+            
+            _context.SaveChanges();
+
+            Team[] teams = { teamSrc, teamTgt };
+            return JsonConvert.SerializeObject(teams);
         }
 
         private string GetGuerrillaDTO(string name)
