@@ -5,11 +5,12 @@ import java.util.ArrayList;
 public class Guerrilla {
 	private int idGuerrilla;
 	private String nombreGuerrilla;
+	private String faccion;
 	private String correoGuerrilla;
 	private ArrayList<Recurso> listaRecursos;
 	private ArrayList<UnidadesDeBatalla> unidadesDeBatallas;
 
-	public Guerrilla(int idGuerrilla, String nombreGuerrilla, String correoGuerrilla, ArrayList<Recurso> listaRecursos,
+	public Guerrilla(int idGuerrilla, String nombreGuerrilla,String faccion, String correoGuerrilla, ArrayList<Recurso> listaRecursos,
 			ArrayList<UnidadesDeBatalla> unidadesDeBatallas) {
 		super();
 		setIdGuerrilla(idGuerrilla);
@@ -17,11 +18,20 @@ public class Guerrilla {
 		setCorreoGuerrilla(correoGuerrilla);
 		setListaRecursos(listaRecursos);
 		setUnidadesDeBatallas(unidadesDeBatallas);
+		setFaccion(faccion);
 	}
 
 	public Guerrilla() {
 		setListaRecursos(new ArrayList<Recurso>());
 		setUnidadesDeBatallas(new ArrayList<UnidadesDeBatalla>());
+	}
+
+	public String getFaccion() {
+		return faccion;
+	}
+
+	public void setFaccion(String faccion) {
+		this.faccion = faccion;
 	}
 
 	public int getIdGuerrilla() {
