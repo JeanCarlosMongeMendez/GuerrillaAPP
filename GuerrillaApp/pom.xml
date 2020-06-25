@@ -10,9 +10,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ucr.guerrillaapp</groupId>
-	<artifactId>guerrillaapp</artifactId>
+	<artifactId>GuerrillaApp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>guerrillaapp</name>
+	<name>GuerrillaApp</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>

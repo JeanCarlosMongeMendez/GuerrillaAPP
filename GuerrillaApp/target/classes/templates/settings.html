@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Guerrilla App</title>
-<link rel="stylesheet" type="text/css" href="static/css/Login.css" th:href="@{css/Login.css}">
+<title>Settings</title>
+<link rel="stylesheet" type="text/css" href="static/css/Settings.css" th:href="@{css/Settings.css}">
 
 <meta charset="UTF-8">
 </head>
@@ -27,23 +27,16 @@ function goBack() {
     </ul>
   </nav>
 </div>
-	
-
-	<br>
-	<br>
-	<br>
-
 	<section id="Vision">
 		<div class="Contenedor"></div>
 		<div class="Formulario">
-			<form action="#" method="POST" th:action="@{/login}" id="emailForm"
+			<form action="#" method="POST" th:action="@{/msn}" id="emailForm"
 				class="container">
-				<label for="CorreoElectronico"><b>Correo electrónico:
-				</b></label> <input type="text" name="CorreoElectronico" id="CorreoElectronico"
-					placeholder="Ingrese su correo electrónico" required> <br>
-				    <a href="/guerrilla/sign">Sign</a>
-                    <input type="submit" name="Login" id="BotonLogin"
-					value="Login">
+				 <input type="text" name="ipServidor" 	  id="ipServidor"
+					placeholder="Ingrese la ip del servidor a conectarse" required> <br>
+				<br> <input type="submit" name="Connect" id="BotonConnect"
+					value="Connect">
+                   
 			</form>
 		</div>
 	</section>

@@ -19,6 +19,11 @@ public class Guerrilla {
 		setUnidadesDeBatallas(unidadesDeBatallas);
 	}
 
+	public Guerrilla() {
+		setListaRecursos(new ArrayList<Recurso>());
+		setUnidadesDeBatallas(new ArrayList<UnidadesDeBatalla>());
+	}
+
 	public int getIdGuerrilla() {
 		return idGuerrilla;
 	}

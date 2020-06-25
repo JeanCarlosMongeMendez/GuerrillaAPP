@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>Guerrilla App</title>
-<link rel="stylesheet" type="text/css" href="static/css/Login.css" th:href="@{css/Login.css}">
+<link rel="stylesheet" type="text/css" href="static/css/Sign.css" th:href="@{css/Sign.css}">
 
 <meta charset="UTF-8">
 </head>
@@ -38,12 +38,22 @@ function goBack() {
 		<div class="Formulario">
 			<form action="#" method="POST" th:action="@{/login}" id="emailForm"
 				class="container">
-				<label for="CorreoElectronico"><b>Correo electrónico:
-				</b></label> <input type="text" name="CorreoElectronico" id="CorreoElectronico"
+				<label for="CorreoElectronico"><b>Correo Electrónico:
+				</b></label> <input type="text" name="CorreoElectronico"   id="CorreoElectronico"
 					placeholder="Ingrese su correo electrónico" required> <br>
-				    <a href="/guerrilla/sign">Sign</a>
-                    <input type="submit" name="Login" id="BotonLogin"
-					value="Login">
+				
+                	<label for="NombreGuerrilla"><b>Nombre Guerrilla:
+				</b></label>
+               <select name="NombreGuerrilla" id="NombreGuerrilla">
+  <option value="China">China</option>
+  <option value="Usa">Usa</option>
+  <option value="Mec">Mec</option>
+
+</select>
+                    
+                    
+                    <input type="submit" name="Sign" id="BotonSign"
+					value="Sign">
 			</form>
 		</div>
 	</section>
