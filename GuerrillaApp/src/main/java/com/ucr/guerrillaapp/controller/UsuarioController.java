@@ -107,11 +107,15 @@ public class UsuarioController {
 		}
 		@RequestMapping(value = "/settings", method = RequestMethod.GET)
 		public String settings() {
-			if (guerrilla.getCorreoGuerrilla()==null) {
-				return "login";	
-			}else{
-			return "settings";
-			}
+			
+			return "login";
+			
+		}
+		@RequestMapping(value = "/settings", method = RequestMethod.POST)
+		public String settings(@RequestParam("ipServidor") String ipServer) {
+			url=ipServer+"/guerrilla";
+			return "login";
+			
 		}
 }
 
