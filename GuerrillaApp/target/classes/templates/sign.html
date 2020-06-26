@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Guerrilla App</title>
+<link rel="stylesheet" type="text/css" href="static/css/Sign.css" th:href="@{css/Sign.css}">
+
+<meta charset="UTF-8">
+</head>
+<body>
+	<div class="respmenu">
+	<button onclick="goBack()">Go Back</button>
+
+<script>
+function goBack() {
+  window.history.back();
+}
+</script> 
+  <input type="checkbox">
+  <i class="fas fa-bars"></i>
+  <i class="fas fa-times"></i>
+  <nav>
+    <ul>
+      <li><a href="/guerrilla/myprofile">My Profile</a></li>
+      <li><a href="/guerrilla/ranking">Ranking</a></li>
+      <li><a href="/guerrilla/settings">Settings</a></li>
+      <li><a href="#">LogOut</a></li>
+    </ul>
+  </nav>
+</div>
+	
+
+	<br>
+	<br>
+	<br>
+
+	<section id="Vision">
+		<div class="Contenedor"></div>
+		<div class="Formulario">
+			<form action="#" method="POST" th:action="@{/login}" id="emailForm"
+				class="container">
+				<label for="CorreoElectronico"><b>Correo Electrónico:
+				</b></label> <input type="text" name="CorreoElectronico"   id="CorreoElectronico"
+					placeholder="Ingrese su correo electrónico" required> <br>
+					
+				<label for="NombreGuerrilla"><b>Nombre Guerrilla:
+				</b></label> <input type="text" name="NombreGuerrilla"   id="NombreGuerrilla"
+					placeholder="Ingrese el nombre de su guerrilla" required> <br>
+					
+                	<label for="faccion"><b>facción:
+				</b></label>
+               <select name="faccion" id="faccion">
+  				<option value="China">China</option>
+  				<option value="Usa">Usa</option>
+ 			 	<option value="Mec">Mec</option>
+
+				</select>
+                    
+                    
+                    <input type="submit" name="Sign" id="BotonSign"
+					value="Sign">
+			</form>
+		</div>
+	</section>
+</body>
+</html>
