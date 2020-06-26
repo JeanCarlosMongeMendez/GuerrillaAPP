@@ -30,15 +30,15 @@ namespace GuerrillaAPI
             services.AddControllers();
             services.AddMvc();
             services.AddDbContext<GuerrillaAPPContext>(options => options.UseSqlServer(Configuration.GetConnectionString("GuerrillaDB")));
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("GetAllPolicy", builder =>
-            //    {
-            //        builder.WithOrigins("http://localhost:4200", "http://localhost:4200/students")
-            //        .AllowAnyHeader()
-            //        .AllowAnyMethod();//PUT, PATCH, GET, DELETE
-            //    });
-            //});
+            services.AddCors(options =>
+            {
+                options.AddPolicy("GetAllPolicy", builder =>
+                {
+                    builder.WithOrigins("*")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();//PUT, PATCH, GET, DELETE
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,7 +53,7 @@ namespace GuerrillaAPI
 
             app.UseRouting();
 
-            //app.UseCors("GetAllPolicy");
+            app.UseCors("GetAllPolicy");
 
             app.UseAuthorization();
 
