@@ -28,7 +28,8 @@ function goBack() {
   </nav>
 </div>
  
-	<section id="Vision">
+ 
+	<section id="Guerrillas" th:each="guerrilla : ${guerillaList}">
 <table>
 <tr>
   <td><strong>Rank</strong></td>
@@ -36,17 +37,14 @@ function goBack() {
 </tr>
 
 <tr>
-  <td>Money  </td>
-  <td>20</td>
+  <td th:text="${guerrilla.rank}"></td>
+  <td th:text="${guerrilla.guerrillaName}"></td>
    <td><button type="button">attack</button> </td>
 </tr>
 
 </table>
-
-
-
-
-
 </section>
+
+
 </body>
 </html>

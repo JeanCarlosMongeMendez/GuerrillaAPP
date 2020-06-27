@@ -29,23 +29,15 @@ function goBack() {
 </div>
 
 	<section id="Vision">
-		<label for="GuerrillaName"><b>Guerrilla Name</b></label>
+		<h1 th:text="${nombre}"></h1>
 
 <h1>Recursos</h1>
 
-<table>
+<table th:each="resource : ${resources}">
 <tr>
-  <td>Oil</td>
-  <td>20</td>
-</tr>
-
-<tr>
-  <td>Money  </td>
-  <td>20</td>
-</tr>
-<tr>
-  <td>People  </td>
-  <td>20</td>
+  <td th:text="${resource.resource}"></td>
+  <td th:text="${resource.quantity}"></td>
+  
 </tr>
 </table>
 
@@ -61,7 +53,7 @@ function goBack() {
 <tr>
   <td>CSS</td>
   <td>20</td>
-
+<td><button type="button">Comprar</button> </td>
 </tr>
 
 </table>

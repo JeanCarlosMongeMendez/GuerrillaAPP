@@ -2,37 +2,45 @@ package com.ucr.guerrillaapp.domain;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
+//@JsonIgnoreProperties(ignoreUnknown=true)
 public class Guerrilla {
 	private int idGuerrilla;
-	private String nombreGuerrilla;
-	private String faccion;
-	private String correoGuerrilla;
-	private ArrayList<Recurso> listaRecursos;
-	private ArrayList<UnidadesDeBatalla> unidadesDeBatallas;
-
-	public Guerrilla(int idGuerrilla, String nombreGuerrilla,String faccion, String correoGuerrilla, ArrayList<Recurso> listaRecursos,
-			ArrayList<UnidadesDeBatalla> unidadesDeBatallas) {
+	//@JsonProperty("guerrillaName")
+	private String guerrillaName;
+	//@JsonProperty("rank")
+	private int rank;
+	//@JsonProperty("faction")
+	private String faction;
+	//@JsonProperty("email")
+	private String email;
+	//@JsonProperty("resources")
+	private ArrayList<Recurso> resources;
+	//@JsonProperty("army")
+	private ArrayList<UnidadesDeBatalla> units;
+	
+	
+	public Guerrilla(int idGuerrilla, String guerrillaName,String faction, String email, ArrayList<Recurso> resources,
+			ArrayList<UnidadesDeBatalla> units) {
 		super();
 		setIdGuerrilla(idGuerrilla);
-		setNombreGuerrilla(nombreGuerrilla);
-		setCorreoGuerrilla(correoGuerrilla);
-		setListaRecursos(listaRecursos);
-		setUnidadesDeBatallas(unidadesDeBatallas);
-		setFaccion(faccion);
+		setGuerrillaName(guerrillaName);
+		setEmail(email);
+		setResources(resources);
+		setUnits(units);
+		setFaction(faction);
 	}
 
 	public Guerrilla() {
-		setListaRecursos(new ArrayList<Recurso>());
-		setUnidadesDeBatallas(new ArrayList<UnidadesDeBatalla>());
+		setResources(new ArrayList<Recurso>());
+		setUnits(new ArrayList<UnidadesDeBatalla>());
+		setEmail(null);
 	}
 
-	public String getFaccion() {
-		return faccion;
-	}
-
-	public void setFaccion(String faccion) {
-		this.faccion = faccion;
-	}
+	
 
 	public int getIdGuerrilla() {
 		return idGuerrilla;
@@ -42,42 +50,58 @@ public class Guerrilla {
 		this.idGuerrilla = idGuerrilla;
 	}
 
-	public String getNombreGuerrilla() {
-		return nombreGuerrilla;
+	public String getGuerrillaName() {
+		return guerrillaName;
 	}
 
-	public void setNombreGuerrilla(String nombreGuerrilla) {
-		this.nombreGuerrilla = nombreGuerrilla;
+	public void setGuerrillaName(String guerrillaName) {
+		this.guerrillaName = guerrillaName;
 	}
 
-	public String getCorreoGuerrilla() {
-		return correoGuerrilla;
+	public String getFaction() {
+		return faction;
 	}
 
-	public void setCorreoGuerrilla(String correoGuerrilla) {
-		this.correoGuerrilla = correoGuerrilla;
+	public void setFaction(String faction) {
+		this.faction = faction;
 	}
 
-	public ArrayList<Recurso> getListaRecursos() {
-		return listaRecursos;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setListaRecursos(ArrayList<Recurso> listaRecursos) {
-		this.listaRecursos = listaRecursos;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-	public ArrayList<UnidadesDeBatalla> getUnidadesDeBatallas() {
-		return unidadesDeBatallas;
+	public ArrayList<Recurso> getResources() {
+		return resources;
 	}
 
-	public void setUnidadesDeBatallas(ArrayList<UnidadesDeBatalla> unidadesDeBatallas) {
-		this.unidadesDeBatallas = unidadesDeBatallas;
+	public void setResources(ArrayList<Recurso> resources) {
+		this.resources = resources;
+	}
+
+	public ArrayList<UnidadesDeBatalla> getUnits() {
+		return units;
+	}
+
+	public void setUnits(ArrayList<UnidadesDeBatalla> units) {
+		this.units = units;
+	}
+
+	public int getRank() {
+		return rank;
+	}
+
+	public void setRank(int rank) {
+		this.rank = rank;
 	}
 
 	@Override
 	public String toString() {
-		return "Guerrilla [idGuerrilla=" + idGuerrilla + ", nombreGuerrilla=" + nombreGuerrilla + ", correoGuerrilla="
-				+ correoGuerrilla + ", listaRecursos=" + listaRecursos + ", unidadesDeBatallas=" + unidadesDeBatallas
+		return "Guerrilla [idGuerrilla=" + idGuerrilla + ", guerrillaName=" + guerrillaName + ", email="
+				+ email + ", resources=" + resources + ", units=" + units
 				+ "]";
 	}
 
