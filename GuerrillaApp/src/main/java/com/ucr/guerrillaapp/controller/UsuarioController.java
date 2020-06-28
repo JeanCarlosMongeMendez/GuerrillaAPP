@@ -36,8 +36,8 @@ import com.ucr.guerrillaapp.domain.UnidadesDeBatalla;
 public class UsuarioController {
 
 	private Guerrilla guerrilla = new Guerrilla();
-	private static String url = "http://74.207.226.124:5000/guerrilla";
-	// private static String url = "http://localhost:5000/guerrilla";
+	//private static String url = "http://74.207.226.124:5000/guerrilla";
+	private static String url = "http://localhost:5000/guerrilla";
 	final private RestTemplate restTemplate = new RestTemplate();
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -110,14 +110,7 @@ public class UsuarioController {
 		// send POST request
 		ResponseEntity<String> response = restTemplate.postForEntity(url + "/" + name, entity, String.class);
 
-		// check response
-		if (response.getStatusCode() == HttpStatus.CREATED) {
-			System.out.println("Request Successful");
-			System.out.println(response.getBody());
-		} else {
-			System.out.println("Request Failed");
-			System.out.println(response.getStatusCode());
-		}
+
 		return "sign";
 
 	}
@@ -170,12 +163,14 @@ public class UsuarioController {
 		model.addAttribute("nombre", guerrilla.getGuerrillaName());
 		model.addAttribute("recurso", guerrilla.getResources());
 		return "myprofile";
-
+		
 	}
 
 	@RequestMapping(value = "/ranking", method = RequestMethod.GET)
 	public String ranking(Model model) throws IOException {
-		
+			if (guerrilla.getGuerrillaName() == null) {
+				return "login";
+			}
 		// create headers
 				HttpHeaders headers = new HttpHeaders();
 
@@ -195,12 +190,17 @@ public class UsuarioController {
 				List<Guerrilla> guerrillaList = new ArrayList<Guerrilla>();
 				root.forEach(jsonObject -> {
 					Guerrilla guerrillaTemp=new Guerrilla();
-					guerrillaTemp.setGuerrillaName(jsonObject.get("guerrillaName").asText());
+					String guerrillaName=jsonObject.get("guerrillaName").asText();
+					if (!guerrillaName.equals(guerrilla.getGuerrillaName())) {
+						guerrillaTemp.setGuerrillaName(guerrillaName);
+						guerrillaTemp.setRank(jsonObject.get("rank").asInt());
+						guerrillaTemp.setFaction(jsonObject.get("faction").asText());
+						guerrillaList.add(guerrillaTemp);
 
-					guerrillaTemp.setRank(jsonObject.get("rank").asInt());
-					guerrillaTemp.setFaction(jsonObject.get("faction").asText());
-					guerrillaList.add(guerrillaTemp);
-
+					}
+					
+					
+			
 				});
 				
 		
