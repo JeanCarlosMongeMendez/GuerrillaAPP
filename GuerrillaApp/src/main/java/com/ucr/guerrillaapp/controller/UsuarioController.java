@@ -37,8 +37,10 @@ public class UsuarioController {
 
 	private Guerrilla guerrilla = new Guerrilla();
 	//private static String url = "http://74.207.226.124:5000/guerrilla";
-	private static String url = "http://localhost:5000/guerrilla";
+	private static String url = "https://localhost:44304/guerrilla";
 	final private RestTemplate restTemplate = new RestTemplate();
+
+
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {
@@ -133,7 +135,7 @@ public class UsuarioController {
 
 		// make an HTTP GET request with headers
 		// make an HTTP GET request with headers
-		ResponseEntity<String> response = restTemplate.exchange(url + "?name=" + guerrilla.getGuerrillaName(),
+		ResponseEntity<String> response = restTemplate.exchange(url + "/" + guerrilla.getGuerrillaName(),
 				HttpMethod.GET, request, String.class, 1);
 
 		ObjectMapper mapper = new ObjectMapper();

@@ -8,6 +8,7 @@ public class GuerrillaAppApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(GuerrillaAppApplication.class, args);
+		System.setProperty("com.sun.net.ssl.checkRevocation", "false");
 	}
 
 }

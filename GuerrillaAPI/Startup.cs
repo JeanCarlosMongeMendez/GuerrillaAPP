@@ -34,7 +34,7 @@ namespace GuerrillaAPI
             {
                 options.AddPolicy("GetAllPolicy", builder =>
                 {
-                    builder.WithOrigins("*")
+                    builder.WithOrigins("https://*.*")
                     .AllowAnyHeader()
                     .AllowAnyMethod();//PUT, PATCH, GET, DELETE
                 });
