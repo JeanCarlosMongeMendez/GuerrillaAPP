@@ -65,11 +65,12 @@ public class UsuarioController {
 		HttpEntity request = new HttpEntity(headers);
 
 		// make an HTTP GET request with headers
-		ResponseEntity<String> response = restTemplate.exchange(url + "?email=" + mail, HttpMethod.GET, request,
-				String.class, 1);
+		ResponseEntity<JSONArray> response = restTemplate.exchange(url + "?email=" + mail, HttpMethod.GET, request,
+				JSONArray.class, 1);
 
+		JSONArray res = response.getBody();
 		ObjectMapper mapper = new ObjectMapper();
-		JsonNode root = mapper.readTree(response.getBody());
+		JsonNode root = mapper.readTree(response.getBody().toString());
 
 		root.forEach(jsonObject -> {
 			guerrilla.setGuerrillaName(jsonObject.get("guerrillaName").asText());
@@ -82,12 +83,14 @@ public class UsuarioController {
 
 		return "login";
 	}
+
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String logout() {
 		guerrilla=new Guerrilla();
 		return "login";
 
 	}
+
 	@RequestMapping(value = "/sign", method = RequestMethod.GET)
 	public String sign() {
 		return "sign";
@@ -142,26 +145,28 @@ public class UsuarioController {
 
 		// make an HTTP GET request with headers
 		// make an HTTP GET request with headers
-		ResponseEntity<String> response = restTemplate.exchange(url + "/" + guerrilla.getGuerrillaName(),
-				HttpMethod.GET, request, String.class, 1);
+		ResponseEntity<JSONObject> response = restTemplate.exchange(url + "/" + guerrilla.getGuerrillaName(),
+				HttpMethod.GET, request, JSONObject.class, 1);
 
+		JSONObject jsonObject = response.getBody();
 		ObjectMapper mapper = new ObjectMapper();
-		JsonNode root = mapper.readTree(response.getBody());
 
-		JsonNode resources = root.findPath("resources");
+		//JsonNode root = mapper.readTree(response.getBody());
+
+		JSONObject rec = (JSONObject) jsonObject.get("resources");
 		ArrayList<Recurso> resourcesGuerrilla = new ArrayList<>();
 
 		Recurso oil = new Recurso();
 		oil.setResource("oil");
-		oil.setQuantity(resources.get("oil").asInt());
+		oil.setQuantity((Integer)rec.get("oil"));
 
 		Recurso money = new Recurso();
 		money.setResource("money");
-		money.setQuantity(resources.get("money").asInt());
+		money.setQuantity((Integer) rec.get("money"));
 
 		Recurso people = new Recurso();
 		people.setResource("people");
-		people.setQuantity(resources.get("people").asInt());
+		people.setQuantity((Integer) rec.get("people"));
 
 		resourcesGuerrilla.add(oil);
 		resourcesGuerrilla.add(money);
