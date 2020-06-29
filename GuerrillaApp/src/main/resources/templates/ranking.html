@@ -23,7 +23,7 @@ function goBack() {
       <li><a href="/guerrilla/myprofile">My Profile</a></li>
       <li><a href="/guerrilla/ranking">Ranking</a></li>
       <li><a href="/guerrilla/settings">Settings</a></li>
-      <li><a href="#">LogOut</a></li>
+      <li><a href="/guerrilla/logout">LogOut</a></li>
     </ul>
   </nav>
 </div>
@@ -39,7 +39,15 @@ function goBack() {
 <tr>
   <td th:text="${guerrilla.rank}"></td>
   <td th:text="${guerrilla.guerrillaName}"></td>
-   <td><button type="button">attack</button> </td>
+  
+   <td><form action="#" method="POST" th:action="@{/attack}" id="emailForm"
+				class="container">
+		<input type="hidden" name="targetGuerrillaName" th:value="${guerrilla.guerrillaName}"/>
+        <input type="submit"  value="attack"></input>
+</form></td>
+
+
+
 </tr>
 
 </table>

@@ -1,13 +1,13 @@
 package com.ucr.guerrillaapp.domain;
 
 public class Recurso {
-	private int idRecurso;
+	
 	private int quantity;
 	private String resource;
 
-	public Recurso(int idRecurso, int quantity, String resource) {
+	public Recurso( int quantity, String resource) {
 		super();
-		setIdRecurso(idRecurso);
+		
 		setResource(resource);
 		setQuantity(quantity);
 	}
@@ -16,13 +16,6 @@ public class Recurso {
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getIdRecurso() {
-		return idRecurso;
-	}
-
-	public void setIdRecurso(int idRecurso) {
-		this.idRecurso = idRecurso;
-	}
 
 	public int getQuantity() {
 		return quantity;
@@ -42,7 +35,7 @@ public class Recurso {
 
 	@Override
 	public String toString() {
-		return "Recurso [idRecurso=" + idRecurso + ", quantity=" + quantity + ", resource="
+		return "Recurso [quantity=" + quantity + ", resource="
 				+ resource + "]";
 	}
 

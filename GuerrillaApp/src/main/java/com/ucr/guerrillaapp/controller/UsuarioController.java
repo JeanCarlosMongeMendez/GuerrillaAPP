@@ -31,13 +31,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ucr.guerrillaapp.domain.Guerrilla;
 import com.ucr.guerrillaapp.domain.Recurso;
 import com.ucr.guerrillaapp.domain.UnidadesDeBatalla;
+import com.ucr.guerrillaapp.domain.army;
+import com.ucr.guerrillaapp.domain.buildings;
 
 @Controller
 public class UsuarioController {
 
 	private Guerrilla guerrilla = new Guerrilla();
-	//private static String url = "http://74.207.226.124:5000/guerrilla";
-	private static String url = "http://localhost:5000/guerrilla";
+	private static String url = "http://74.207.226.124:5000/guerrilla";
+	//private static String url = "http://localhost:5000/guerrilla";
 	final private RestTemplate restTemplate = new RestTemplate();
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -78,7 +80,12 @@ public class UsuarioController {
 
 		return "login";
 	}
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	public String logout() {
+		guerrilla=new Guerrilla();
+		return "login";
 
+	}
 	@RequestMapping(value = "/sign", method = RequestMethod.GET)
 	public String sign() {
 		return "sign";
@@ -165,7 +172,37 @@ public class UsuarioController {
 		return "myprofile";
 		
 	}
+	@RequestMapping(value = "/buyunits", method = RequestMethod.POST)
+	public String buyUnits(@RequestParam("outputAssault") int outputAssault,@RequestParam("outputEngineer") int outputEngineer,
+			@RequestParam("outputTank") int outputTank,@RequestParam("outputBunkers") int outputBunkers ) {
+		buildings Building=new buildings();
+		Building.setBunkers(outputBunkers);
+		army Army=new army();
+		Army.setAssault(outputAssault);
+		Army.setEngineer(outputEngineer);
+		Army.setTank(outputTank);
+		// create headers
+		HttpHeaders headers = new HttpHeaders();
+		// set `content-type` header
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		// set `accept` header
+		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
+		// request body parameters
+		Map<String, Object> map = new HashMap<>();
+		map.put("army",Army.toString());
+		map.put("buildings",Building.toString());
+		
+		
+		// build the request
+		HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
+	
+		// send POST request
+		restTemplate.put(url + "/" + guerrilla.getGuerrillaName()+"/units", entity, String.class);
+
+		return "myprofile";
+
+	}
 	@RequestMapping(value = "/ranking", method = RequestMethod.GET)
 	public String ranking(Model model) throws IOException {
 			if (guerrilla.getGuerrillaName() == null) {
@@ -211,6 +248,32 @@ public class UsuarioController {
 		
 		model.addAttribute("guerillaList", guerrillaList);
 		return "ranking";
+	}
+	@RequestMapping(value = "/attack", method = RequestMethod.POST)
+	public String attack(Model model,@RequestParam("targetGuerrillaName") String targetGuerrillaName) {
+		
+		// create headers
+				HttpHeaders headers = new HttpHeaders();
+				// set `content-type` header
+				headers.setContentType(MediaType.APPLICATION_JSON);
+				// set `accept` header
+				headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+				// request body parameters
+				Map<String, Object> map = new HashMap<>();
+				
+
+				// build the request
+				HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
+
+				// send POST request
+				ResponseEntity<String> response = restTemplate.postForEntity(url + "/attack/" + targetGuerrillaName+"?guerrillaSrc="+guerrilla.getGuerrillaName()
+						, entity, String.class);
+		
+		model.addAttribute("targetGuerrillaName", targetGuerrillaName);
+		
+		return "result";
+
 	}
 
 	@RequestMapping(value = "/settings", method = RequestMethod.GET)

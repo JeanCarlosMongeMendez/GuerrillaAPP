@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +23,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ucr.guerrillaapp.domain.Guerrilla;
 import com.ucr.guerrillaapp.domain.Recurso;
+import com.ucr.guerrillaapp.domain.army;
+import com.ucr.guerrillaapp.domain.buildings;
 
 @SpringBootTest
 public class UsuarioControllerTest {
@@ -67,7 +71,7 @@ public class UsuarioControllerTest {
 	}
 	@Test
 	public void myProfile() throws IOException {
-		String name="los danieles";
+		/**String name="los danieles";
 		// create headers
 		HttpHeaders headers = new HttpHeaders();
 
@@ -115,7 +119,54 @@ public class UsuarioControllerTest {
 	  
 	
 		guerrilla.setResources(resourcesGuerrilla);
-		System.out.print(guerrilla.getResources().toString());
+		System.out.print(guerrilla.getResources().toString());**/
+	}
+	@Test
+	public void sign() throws IOException {
+		/**String name="los danieles";
+		String mail="dfonse11@gmail.com";
+		String faction="Usa";
+		// create headers
+		HttpHeaders headers = new HttpHeaders();
+		// set `content-type` header
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		// set `accept` header
+		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+		// request body parameters
+		Map<String, Object> map = new HashMap<>();
+		map.put("guerrillaName", name);
+		map.put("email", mail);
+		map.put("faction", faction);
+		System.out.print(map.toString());
+		// build the request
+		HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);**/
+
+	}
+	@Test
+	public void buyUnits() throws IOException {
+	String name="los danieles";
+		buildings Building=new buildings();
+		Building.setBunkers(1);
+		army Army=new army();
+		// create headers
+		HttpHeaders headers = new HttpHeaders();
+		// set `content-type` header
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		// set `accept` header
+		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+		// request body parameters
+		Map<String, Object> map = new HashMap<>();
+		map.put("army",Army.toString());
+		map.put("buildings",Building.toString());
+		System.out.print(map.toString());
+		
+		// build the request
+		HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
+	
+		// send POST request
+		restTemplate.put(url + "/" + name+"/units", entity, String.class);
 	}
 
 }

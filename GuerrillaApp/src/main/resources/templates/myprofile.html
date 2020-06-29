@@ -2,62 +2,111 @@
 <html>
 <head>
 <title>My Profile</title>
-<link rel="stylesheet" type="text/css" href="static/css/MyProfile.css" th:href="@{/css/MyProfile.css}">
+<link rel="stylesheet" type="text/css" href="static/css/MyProfile.css"
+	th:href="@{/css/MyProfile.css}">
 
 <meta charset="UTF-8">
 </head>
 <body>
 	<div class="respmenu">
-	<button onclick="goBack()">Go Back</button>
+		<button onclick="goBack()">Go Back</button>
 
-<script>
-function goBack() {
-  window.history.back();
-}
-</script> 
-  <input type="checkbox">
-  <i class="fas fa-bars"></i>
-  <i class="fas fa-times"></i>
-  <nav>
-    <ul>
-      <li><a href="/guerrilla/myprofile">My Profile</a></li>
-      <li><a href="/guerrilla/ranking">Ranking</a></li>
-      <li><a href="/guerrilla/settings">Settings</a></li>
-      <li><a href="#">LogOut</a></li>
-    </ul>
-  </nav>
-</div>
+		<script>
+			function goBack() {
+				window.history.back();
+			}
+		</script>
+		<input type="checkbox"> <i class="fas fa-bars"></i> <i
+			class="fas fa-times"></i>
+		<nav>
+			<ul>
+				<li><a href="/guerrilla/myprofile">My Profile</a></li>
+				<li><a href="/guerrilla/ranking">Ranking</a></li>
+				<li><a href="/guerrilla/settings">Settings</a></li>
+				<li><a href="/guerrilla/logout">LogOut</a></li>
+			</ul>
+		</nav>
+	</div>
 
 	<section id="Vision">
 		<h1 th:text="${nombre}"></h1>
 
-<h1>Recursos</h1>
+		<h1>Recursos</h1>
 
-<table th:each="resource : ${resources}">
-<tr>
-  <td th:text="${resource.resource}"></td>
-  <td th:text="${resource.quantity}"></td>
-  
-</tr>
-</table>
+		<table th:each="resource : ${resources}">
+			<tr>
+				<td th:text="${resource.resource}"></td>
+				<td th:text="${resource.quantity}"></td>
+
+			</tr>
+		</table>
 
 
 
-<table>
-<tr>
-  <td><strong>defense</strong></td>
-  <td><strong>offense</strong></td>
- 
-</tr>
+		<table>
+			<tr>
+				<td><strong>defense</strong></td>
+				<td><strong>offense</strong></td>
 
-<tr>
-  <td>CSS</td>
-  <td>20</td>
-<td><button type="button">Comprar</button> </td>
-</tr>
+			</tr>
+			<form action="#" method="POST" th:action="@{/buyunits}"
+					id="emailForm" class="container">
+			<tr>
+				
+				<td><input type="text" value="0"name="outputAssault" id="outputAssault" /></td>
+				<td>Assault</td>
+				<script>
+					function assault_count() {
+						res = document.getElementById("outputAssault");
+						res.value = parseInt(res.value) + 1;
+					}
+				</script>
+				<td><a href="javascript:assault_count();">Comprar</a></td>
+			</tr>
 
-</table>
 
-</section>
+			<tr>
+				<td><input type="text" value="0" name="outputEngineer" id="outputEngineer" /></td>
+				<td>Engineer</td>
+				<script>
+					function engineer_count() {
+						res = document.getElementById("outputEngineer");
+						res.value = parseInt(res.value) + 1;
+					}
+				</script>
+				<td><a href="javascript:engineer_count();">Comprar</a></td>
+			</tr>
+
+		<tr>
+			<td><input type="text" value="0" name="outputTank" id="outputTank" /></td>
+			<td>Tank</td>
+			<script>
+				function tank_count() {
+					res = document.getElementById("outputTank");
+					res.value = parseInt(res.value) + 1;
+				}
+			</script>
+			<td><a href="javascript:tank_count();">Comprar</a></td>
+			
+			</tr>
+			<tr>
+			<script>
+				function bunkers_count() {
+					res = document.getElementById("outputBunkers");
+					res.value = parseInt(res.value) + 1;
+				}
+			</script>
+			<td>Bunkers</td>
+			<td><input type="text" value="0" name="outputBunkers" id="outputBunkers" /></td>
+			<td><a href="javascript:bunkers_count();">Comprar</a></td>
+			
+			
+			</tr>
+			 <tr><td><input type="submit" name="TerminarCompra" id="TerminarCompra"
+					value="Terminar Compra"></td><tr>
+		</form>
+		</table>
+
+	</section>
 </body>
 </html>
