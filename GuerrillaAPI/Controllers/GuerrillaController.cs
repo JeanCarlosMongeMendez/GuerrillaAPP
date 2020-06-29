@@ -186,7 +186,7 @@ namespace GuerrillaAPI.Controllers
                     bunkerNewUnits.Guerrilla = name;
                     bunkerNewUnits.Unit = _bunker;
                     bunkerNewUnits.Quantity = units.buildings.bunker;
-                    _context.GuerrillaUnits.Add(bunkerNewUnits);
+                    _context.GuerrillaUnits.Update(bunkerNewUnits);
                 }
 
                 guerrillaOil.Quantity = guerrillaOil.Quantity - oilCost;

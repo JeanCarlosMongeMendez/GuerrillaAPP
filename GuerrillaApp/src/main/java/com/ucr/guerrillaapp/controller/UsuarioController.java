@@ -179,6 +179,7 @@ public class UsuarioController {
 		return "myprofile";
 		
 	}
+
 	@RequestMapping(value = "/buyunits", method = RequestMethod.POST)
 	public String buyUnits(@RequestParam("outputAssault") int outputAssault,@RequestParam("outputEngineer") int outputEngineer,
 			@RequestParam("outputTank") int outputTank,@RequestParam("outputBunkers") int outputBunkers ) {
@@ -210,6 +211,7 @@ public class UsuarioController {
 		return "myprofile";
 
 	}
+
 	@RequestMapping(value = "/ranking", method = RequestMethod.GET)
 	public String ranking(Model model) throws IOException {
 			if (guerrilla.getGuerrillaName() == null) {
@@ -251,6 +253,7 @@ public class UsuarioController {
 		model.addAttribute("guerillaList", guerrillaList);
 		return "ranking";
 	}
+
 	@RequestMapping(value = "/attack", method = RequestMethod.POST)
 	public String attack(Model model,@RequestParam("targetGuerrillaName") String targetGuerrillaName) {
 		
