@@ -335,6 +335,15 @@ namespace GuerrillaAPI.Controllers
                 if (guerrillaTgtUnits.Where(u => u.Unit.Equals(_bunker)).Single().Quantity < 0)
                     guerrillaTgtUnits.Where(u => u.Unit.Equals(_bunker)).Single().Quantity = 0;
 
+                if (guerrillaSrcUnits.Where(u => u.Unit.Equals(_assault)).Single().Quantity < 0)
+                    guerrillaSrcUnits.Where(u => u.Unit.Equals(_assault)).Single().Quantity = 0;
+                if (guerrillaSrcUnits.Where(u => u.Unit.Equals(_engineer)).Single().Quantity < 0)
+                    guerrillaSrcUnits.Where(u => u.Unit.Equals(_engineer)).Single().Quantity = 0;
+                if (guerrillaSrcUnits.Where(u => u.Unit.Equals(_tank)).Single().Quantity < 0)
+                    guerrillaSrcUnits.Where(u => u.Unit.Equals(_tank)).Single().Quantity = 0;
+                if (guerrillaSrcUnits.Where(u => u.Unit.Equals(_bunker)).Single().Quantity < 0)
+                    guerrillaSrcUnits.Where(u => u.Unit.Equals(_bunker)).Single().Quantity = 0;
+
                 _context.GuerrillaUnits.Update(guerrillaSrcUnits.Where(u => u.Unit.Equals(_assault)).Single());
                 _context.GuerrillaUnits.Update(guerrillaSrcUnits.Where(u => u.Unit.Equals(_engineer)).Single());
                 _context.GuerrillaUnits.Update(guerrillaSrcUnits.Where(u => u.Unit.Equals(_tank)).Single());
@@ -352,8 +361,29 @@ namespace GuerrillaAPI.Controllers
                 _context.Update(guerrillaT);
                 _context.SaveChanges();
 
+                List<guerrilla> guerrillas = new List<guerrilla>();
+                guerrillas.Add(GetGuerrillaObject(guerrillaSrc));
+                guerrillas.Add(GetGuerrillaObject(guerrillaName));
+
+                List<result> results = new List<result>();
+                result resultSrc = new result();
+                resultSrc.name = guerrillaSrc;
+                resultSrc.resources = new resources { money = teamSrc.LOOT.MONEY, oil = teamSrc.LOOT.OIL, people = 0 };
+                resultSrc.army = new army { assault = teamSrc.LOSSES.ASSAULT, engineer = teamSrc.LOSSES.ENGINEER, tank = teamSrc.LOSSES.TANK };
+                resultSrc.buildings = new buildings();
+                results.Add(resultSrc);
+                result resultTgt = new result();
+                resultTgt.name = guerrillaName;
+                resultTgt.resources = new resources { money = -1 * teamSrc.LOOT.MONEY, oil = -1 * teamSrc.LOOT.OIL };
+                resultTgt.army = new army { assault = teamTgt.LOSSES.ASSAULT, engineer = teamTgt.LOSSES.ENGINEER, tank = teamTgt.LOSSES.TANK };
+                resultTgt.buildings = new buildings { bunker = teamTgt.LOSSES.BUNKER};
+                results.Add(resultTgt);
+                attackResult attackResults = new attackResult();
+                attackResults.guerrillas = guerrillas;
+                attackResults.results = results;
+
                 Team[] teams = { teamSrc, teamTgt };
-                return JsonConvert.SerializeObject(teams);
+                return JsonConvert.SerializeObject(attackResults);
             }
             else
             {
@@ -411,5 +441,58 @@ namespace GuerrillaAPI.Controllers
 
             return JsonConvert.SerializeObject(guerrilla);
         }
+
+        private guerrilla GetGuerrillaObject(string name)
+        {
+            //load guerrilla
+            var guerrilla = (from guerrillaDB in _context.Guerrilla
+                             where guerrillaDB.Name.Equals(name)
+                             select new guerrilla()
+                             {
+                                 guerrillaName = guerrillaDB.Name,
+                                 name = guerrillaDB.Name,
+                                 email = guerrillaDB.Email,
+                                 faction = guerrillaDB.Faction,
+                                 rank = guerrillaDB.Rank,
+                                 timestamp = guerrillaDB.Timestamp
+                             }).Single();
+
+            //load resources
+            resources resources = new resources();
+            List<GuerrillaResources> resourcesDB = _context.GuerrillaResources.Where(r => r.Guerrilla.Equals(name)).ToList();
+            foreach (GuerrillaResources guerrillaResources in resourcesDB)
+            {
+                if (guerrillaResources.Resource.Equals(_oil))
+                    resources.oil = guerrillaResources.Quantity;
+                if (guerrillaResources.Resource.Equals(_money))
+                    resources.money = guerrillaResources.Quantity;
+                if (guerrillaResources.Resource.Equals(_people))
+                    resources.people = guerrillaResources.Quantity;
+            }
+            guerrilla.resources = resources;
+
+            //load units
+            buildings buildings = new buildings();
+            army army = new army();
+            List<GuerrillaUnits> unitsDB = _context.GuerrillaUnits.Where(u => u.Guerrilla.Equals(name)).ToList();
+            foreach (GuerrillaUnits guerrillaUnits in unitsDB)
+            {
+                if (guerrillaUnits.Unit.Equals(_bunker))
+                    buildings.bunker = guerrillaUnits.Quantity;
+                if (guerrillaUnits.Unit.Equals(_assault))
+                    army.assault = guerrillaUnits.Quantity;
+                if (guerrillaUnits.Unit.Equals(_engineer))
+                    army.engineer = guerrillaUnits.Quantity;
+                if (guerrillaUnits.Unit.Equals(_tank))
+                    army.tank = guerrillaUnits.Quantity;
+            }
+            guerrilla.resources = resources;
+            guerrilla.buildings = buildings;
+            guerrilla.army = army;
+
+            return (guerrilla);
+        }
+
+
     }
 }
