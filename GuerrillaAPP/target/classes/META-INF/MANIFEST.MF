@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: GuerrillaApp
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: dfonse
+Implementation-Vendor-Id: com.ucr.guerrillaapp
+Build-Jdk: 1.8.0_251
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/GuerrillaApp
+Created-By: Maven Integration for Eclipse
+

@@ -215,43 +215,38 @@ public class UsuarioController {
 			if (guerrilla.getGuerrillaName() == null) {
 				return "login";
 			}
-		// create headers
-				HttpHeaders headers = new HttpHeaders();
-
-				// set `Content-Type` and `Accept` headers
-				headers.setContentType(MediaType.APPLICATION_JSON);
-				headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-				// build the request
-				HttpEntity request = new HttpEntity(headers);
-
-				// make an HTTP GET request with headers
-				ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request,
-						String.class, 1);
-
-				ObjectMapper mapper = new ObjectMapper();
-				JsonNode root = mapper.readTree(response.getBody());
-				List<Guerrilla> guerrillaList = new ArrayList<Guerrilla>();
-				root.forEach(jsonObject -> {
-					Guerrilla guerrillaTemp=new Guerrilla();
-					String guerrillaName=jsonObject.get("guerrillaName").asText();
-					if (!guerrillaName.equals(guerrilla.getGuerrillaName())) {
-						guerrillaTemp.setGuerrillaName(guerrillaName);
-						guerrillaTemp.setRank(jsonObject.get("rank").asInt());
-						guerrillaTemp.setFaction(jsonObject.get("faction").asText());
-						guerrillaList.add(guerrillaTemp);
-
-					}
-					
-					
 			
-				});
-				
-		
-		
-		
-		
-		
+			// create headers
+			HttpHeaders headers = new HttpHeaders();
+
+			// set `Content-Type` and `Accept` headers
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+			// build the request
+			HttpEntity request = new HttpEntity(headers);
+
+			// make an HTTP GET request with headers
+			ResponseEntity<JSONArray> response = restTemplate.exchange(url, HttpMethod.GET, request,
+					JSONArray.class, 1);
+
+			JSONArray res = response.getBody();
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode root = mapper.readTree(response.getBody().toString());
+			List<Guerrilla> guerrillaList = new ArrayList<Guerrilla>();
+			root.forEach(jsonObject -> {
+				Guerrilla guerrillaTemp=new Guerrilla();
+				String guerrillaName=jsonObject.get("guerrillaName").asText();
+				if (!guerrillaName.equals(guerrilla.getGuerrillaName())) {
+					guerrillaTemp.setGuerrillaName(guerrillaName);
+					guerrillaTemp.setRank(jsonObject.get("rank").asInt());
+					guerrillaTemp.setFaction(jsonObject.get("faction").asText());
+					guerrillaList.add(guerrillaTemp);
+
+				}
+
+			});
+
 		
 		model.addAttribute("guerillaList", guerrillaList);
 		return "ranking";
